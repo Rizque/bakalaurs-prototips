@@ -1,22 +1,22 @@
-import { Button } from '@/components/Button';
-import { ErrorBanner } from '@/components/ErrorBanner';
-import { Field } from '@/components/Field';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
-import { ScreenContainer } from '@/components/ScreenContainer';
-import { ScreenHeader } from '@/components/ScreenHeader';
-import { useAuth } from '@/contexts/AuthContext';
-import { useBiometricGate } from '@/hooks/useBiometricGate';
-import { formatDate } from '@/lib/format';
-import { contractFilesService } from '@/services/contract-files';
-import { contractsService } from '@/services/contracts';
-import { ContractFile, ContractWithRelations } from '@/types/database';
-import * as DocumentPicker from 'expo-document-picker';
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Button } from "@/components/Button";
+import { ErrorBanner } from "@/components/ErrorBanner";
+import { Field } from "@/components/Field";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenHeader } from "@/components/ScreenHeader";
+import { useAuth } from "@/contexts/AuthContext";
+import { useBiometricGate } from "@/hooks/useBiometricGate";
+import { formatDate } from "@/lib/format";
+import { contractFilesService } from "@/services/contract-files";
+import { contractsService } from "@/services/contracts";
+import { ContractFile, ContractWithRelations } from "@/types/database";
+import * as DocumentPicker from "expo-document-picker";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 
 function statusLabel(status: string) {
-  return status === 'active' ? 'Aktīvs' : 'Beidzies';
+  return status === "active" ? "Aktīvs" : "Beidzies";
 }
 
 export default function ContractDetailScreen() {
@@ -41,7 +41,7 @@ export default function ContractDetailScreen() {
       setContract(c);
       setFile(f);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Kļūda ielādē.');
+      setError(e instanceof Error ? e.message : "Kļūda ielādē.");
     } finally {
       setLoading(false);
     }
@@ -50,14 +50,14 @@ export default function ContractDetailScreen() {
   useFocusEffect(
     useCallback(() => {
       load();
-    }, [load])
+    }, [load]),
   );
 
   const onAddFile = async () => {
     if (!user) return;
     setError(null);
     const result = await DocumentPicker.getDocumentAsync({
-      type: 'application/pdf',
+      type: "application/pdf",
       copyToCacheDirectory: true,
       multiple: false,
     });
@@ -74,7 +74,7 @@ export default function ContractDetailScreen() {
       });
       setFile(newFile);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Augšupielāde neizdevās.');
+      setError(e instanceof Error ? e.message : "Augšupielāde neizdevās.");
     } finally {
       setBusy(false);
     }
@@ -84,29 +84,29 @@ export default function ContractDetailScreen() {
     if (!file) return;
     setError(null);
     const gate = await requestApproval(
-      'Apstipriniet biometriski, lai apskatītu līguma failu'
+      "Apstipriniet ar biometriju, lai apskatītu līguma failu",
     );
     if (!gate.success) {
-      setError(gate.reason ?? 'Apstiprinājums nav saņemts.');
+      setError(gate.reason ?? "Apstiprinājums nav saņemts.");
       return;
     }
-    router.push(`/(app)/contract/${id}/view-file`);
+    router.push(`/(app)/(tabs)/contracts/${id}/view-file`);
   };
 
   const onDeleteFile = () => {
     if (!file) return;
-    Alert.alert('Dzēst līguma failu?', 'Šī darbība ir neatgriezeniska.', [
-      { text: 'Atcelt', style: 'cancel' },
+    Alert.alert("Dzēst līguma failu?", "Šī darbība ir neatgriezeniska.", [
+      { text: "Atcelt", style: "cancel" },
       {
-        text: 'Dzēst',
-        style: 'destructive',
+        text: "Dzēst",
+        style: "destructive",
         onPress: async () => {
           setError(null);
           const gate = await requestApproval(
-            'Apstipriniet biometriski, lai dzēstu līguma failu'
+            "Apstipriniet ar biometriju, lai dzēstu līguma failu",
           );
           if (!gate.success) {
-            setError(gate.reason ?? 'Apstiprinājums nav saņemts.');
+            setError(gate.reason ?? "Apstiprinājums nav saņemts.");
             return;
           }
           setBusy(true);
@@ -114,7 +114,7 @@ export default function ContractDetailScreen() {
             await contractFilesService.remove(file);
             setFile(null);
           } catch (e) {
-            setError(e instanceof Error ? e.message : 'Kļūda dzēšot.');
+            setError(e instanceof Error ? e.message : "Kļūda dzēšot.");
           } finally {
             setBusy(false);
           }
@@ -125,13 +125,13 @@ export default function ContractDetailScreen() {
 
   const onDeleteContract = () => {
     Alert.alert(
-      'Dzēst līgumu?',
-      'Šī darbība ir neatgriezeniska. Pievienotais fails arī tiks dzēsts.',
+      "Dzēst līgumu?",
+      "Šī darbība ir neatgriezeniska. Pievienotais fails arī tiks dzēsts.",
       [
-        { text: 'Atcelt', style: 'cancel' },
+        { text: "Atcelt", style: "cancel" },
         {
-          text: 'Dzēst',
-          style: 'destructive',
+          text: "Dzēst",
+          style: "destructive",
           onPress: async () => {
             setBusy(true);
             try {
@@ -141,12 +141,12 @@ export default function ContractDetailScreen() {
               await contractsService.remove(id);
               router.back();
             } catch (e) {
-              setError(e instanceof Error ? e.message : 'Kļūda dzēšot.');
+              setError(e instanceof Error ? e.message : "Kļūda dzēšot.");
               setBusy(false);
             }
           },
         },
-      ]
+      ],
     );
   };
 
@@ -173,10 +173,21 @@ export default function ContractDetailScreen() {
       <ScreenHeader
         showBack
         title="Līgums"
-        rightAction={{
-          label: 'Rediģēt',
-          onPress: () => router.push(`/(app)/contract/${id}/edit`),
-        }}
+        rightIcons={[
+          {
+            icon: "edit-2",
+            accessibilityLabel: "Rediģēt",
+            onPress: () => router.push(`/(app)/(tabs)/contracts/${id}/edit`),
+            disabled: busy,
+          },
+          {
+            icon: "trash-2",
+            accessibilityLabel: "Dzēst",
+            variant: "destructive",
+            onPress: onDeleteContract,
+            disabled: busy,
+          },
+        ]}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <ErrorBanner message={error} />
@@ -185,7 +196,10 @@ export default function ContractDetailScreen() {
           <Field label="Īpašums" value={contract.property?.name} />
           <Field label="Īrnieks" value={contract.tenant?.full_name} />
           <Field label="Statuss" value={statusLabel(contract.status)} />
-          <Field label="Sākuma datums" value={formatDate(contract.start_date)} />
+          <Field
+            label="Sākuma datums"
+            value={formatDate(contract.start_date)}
+          />
           <Field
             label="Beigu datums"
             value={contract.end_date ? formatDate(contract.end_date) : null}
@@ -202,11 +216,6 @@ export default function ContractDetailScreen() {
                 </Text>
                 <Text style={styles.fileMeta}>
                   Augšupielādēts {formatDate(file.uploaded_at)}
-                </Text>
-                <Text style={styles.fileNotice}>
-                  Fails tiek atvērts tieši lietotnē pēc biometriska
-                  apstiprinājuma. Saturs paliek atmiņā un netiek glabāts
-                  ierīces failu sistēmā.
                 </Text>
               </View>
               <View style={styles.fileActions}>
@@ -235,15 +244,6 @@ export default function ContractDetailScreen() {
             </>
           )}
         </View>
-
-        <View style={styles.dangerZone}>
-          <Button
-            label="Dzēst līgumu"
-            variant="destructive"
-            onPress={onDeleteContract}
-            disabled={busy}
-          />
-        </View>
       </ScrollView>
     </ScreenContainer>
   );
@@ -255,17 +255,17 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 12,
-    color: '#666',
-    textTransform: 'uppercase',
+    color: "#666",
+    textTransform: "uppercase",
     letterSpacing: 0.5,
     marginBottom: 8,
   },
   fileBox: {
     borderWidth: 1,
-    borderColor: '#eee',
+    borderColor: "#eee",
     borderRadius: 8,
     padding: 16,
-    marginBottom: 32,
+    marginBottom: 24,
     gap: 12,
   },
   fileInfo: {
@@ -273,17 +273,11 @@ const styles = StyleSheet.create({
   },
   fileName: {
     fontSize: 16,
-    color: '#000',
+    color: "#000",
   },
   fileMeta: {
     fontSize: 13,
-    color: '#666',
-  },
-  fileNotice: {
-    fontSize: 13,
-    color: '#666',
-    marginTop: 8,
-    lineHeight: 18,
+    color: "#666",
   },
   fileActions: {
     gap: 8,
@@ -291,10 +285,7 @@ const styles = StyleSheet.create({
   },
   emptyFile: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 4,
-  },
-  dangerZone: {
-    marginBottom: 24,
   },
 });

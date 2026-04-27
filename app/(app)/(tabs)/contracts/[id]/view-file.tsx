@@ -6,13 +6,13 @@ import { contractFilesService } from "@/services/contract-files";
 import { Asset } from "expo-asset";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const PDF_JS_MODULE = require("../../../../assets/pdfjs/pdf.js.txt");
+const PDF_JS_MODULE = require("../../../../../assets/pdfjs/pdf.js.txt");
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const PDF_WORKER_MODULE = require("../../../../assets/pdfjs/pdf.worker.js.txt");
+const PDF_WORKER_MODULE = require("../../../../../assets/pdfjs/pdf.worker.js.txt");
 const buildHtml = (
   signedUrl: string,
   pdfJsUri: string,
@@ -149,10 +149,6 @@ export default function ViewFileScreen() {
   return (
     <ScreenContainer>
       <ScreenHeader showBack title="Līguma fails" />
-      <Text style={styles.notice}>
-        Fails tiek rādīts tieši lietotnē atmiņā un netiek glabāts ierīces failu
-        sistēmā.
-      </Text>
       <ErrorBanner message={error} />
       <View style={styles.viewer}>
         {loading || !html ? (
@@ -180,12 +176,6 @@ export default function ViewFileScreen() {
 }
 
 const styles = StyleSheet.create({
-  notice: {
-    fontSize: 13,
-    color: "#666",
-    marginBottom: 12,
-    lineHeight: 18,
-  },
   viewer: {
     flex: 1,
     backgroundColor: "#2b2b2b",

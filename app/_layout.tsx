@@ -9,7 +9,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <DeviceIntegrityProvider>
         <AuthProvider>
-          <StatusBar style="dark" />
+          <StatusBar hidden />
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(auth)" />
             <Stack.Screen name="(app)" />

@@ -4,9 +4,9 @@ import {
   StyleSheet,
   Text,
   ViewStyle,
-} from 'react-native';
+} from "react-native";
 
-type Variant = 'primary' | 'secondary' | 'destructive';
+type Variant = "primary" | "secondary" | "destructive";
 
 type Props = {
   label: string;
@@ -20,7 +20,7 @@ type Props = {
 export function Button({
   label,
   onPress,
-  variant = 'primary',
+  variant = "primary",
   disabled = false,
   loading = false,
   style,
@@ -42,7 +42,9 @@ export function Button({
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'secondary' ? '#0066cc' : '#fff'} />
+        <ActivityIndicator
+          color={variant === "secondary" ? "#2392ec" : "#fff"}
+        />
       ) : (
         <Text style={[styles.label, textStyle]}>{label}</Text>
       )}
@@ -54,20 +56,20 @@ const styles = StyleSheet.create({
   base: {
     height: 48,
     borderRadius: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 16,
   },
   primary: {
-    backgroundColor: '#0066cc',
+    backgroundColor: "#2392ec",
   },
   secondary: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderWidth: 1,
-    borderColor: '#0066cc',
+    borderColor: "#2392ec",
   },
   destructive: {
-    backgroundColor: '#cc0000',
+    backgroundColor: "#eb2d2d",
   },
   disabled: {
     opacity: 0.5,
@@ -77,12 +79,12 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });
 
 const textStyles = StyleSheet.create({
-  primary: { color: '#fff' },
-  secondary: { color: '#0066cc' },
-  destructive: { color: '#fff' },
+  primary: { color: "#fff" },
+  secondary: { color: "#2392ec" },
+  destructive: { color: "#fff" },
 });

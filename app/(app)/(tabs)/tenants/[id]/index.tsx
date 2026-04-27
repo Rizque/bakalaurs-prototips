@@ -1,20 +1,19 @@
-import { Button } from '@/components/Button';
 import { ErrorBanner } from '@/components/ErrorBanner';
 import { Field } from '@/components/Field';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { formatDate } from '@/lib/format';
-import { propertiesService } from '@/services/properties';
-import { Property } from '@/types/database';
+import { tenantsService } from '@/services/tenants';
+import { Tenant } from '@/types/database';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 
-export default function PropertyDetailScreen() {
+export default function TenantDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const [item, setItem] = useState<Property | null>(null);
+  const [item, setItem] = useState<Tenant | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -22,7 +21,7 @@ export default function PropertyDetailScreen() {
   const load = useCallback(async () => {
     setError(null);
     try {
-      const data = await propertiesService.getById(id);
+      const data = await tenantsService.getById(id);
       setItem(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Kļūda ielādē.');
@@ -38,7 +37,7 @@ export default function PropertyDetailScreen() {
   );
 
   const onDelete = () => {
-    Alert.alert('Dzēst īpašumu?', 'Šī darbība ir neatgriezeniska.', [
+    Alert.alert('Dzēst īrnieku?', 'Šī darbība ir neatgriezeniska.', [
       { text: 'Atcelt', style: 'cancel' },
       {
         text: 'Dzēst',
@@ -46,7 +45,7 @@ export default function PropertyDetailScreen() {
         onPress: async () => {
           setBusy(true);
           try {
-            await propertiesService.remove(id);
+            await tenantsService.remove(id);
             router.back();
           } catch (e) {
             setError(e instanceof Error ? e.message : 'Kļūda dzēšot.');
@@ -69,8 +68,8 @@ export default function PropertyDetailScreen() {
   if (!item) {
     return (
       <ScreenContainer>
-        <ScreenHeader showBack title="Īpašums" />
-        <ErrorBanner message="Īpašums nav atrasts." />
+        <ScreenHeader showBack title="Īrnieks" />
+        <ErrorBanner message="Īrnieks nav atrasts." />
       </ScreenContainer>
     );
   }
@@ -79,28 +78,30 @@ export default function PropertyDetailScreen() {
     <ScreenContainer>
       <ScreenHeader
         showBack
-        title={item.name}
-        rightAction={{
-          label: 'Rediģēt',
-          onPress: () => router.push(`/(app)/property/${id}/edit`),
-        }}
+        title={item.full_name}
+        rightIcons={[
+          {
+            icon: 'edit-2',
+            accessibilityLabel: 'Rediģēt',
+            onPress: () => router.push(`/(app)/(tabs)/tenants/${id}/edit`),
+            disabled: busy,
+          },
+          {
+            icon: 'trash-2',
+            accessibilityLabel: 'Dzēst',
+            variant: 'destructive',
+            onPress: onDelete,
+            disabled: busy,
+          },
+        ]}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <ErrorBanner message={error} />
 
         <View style={styles.fields}>
-          <Field label="Nosaukums" value={item.name} />
-          <Field label="Adrese" value={item.address} />
+          <Field label="Vārds, uzvārds" value={item.full_name} />
+          <Field label="Kontaktinformācija" value={item.contact_info} />
           <Field label="Izveidots" value={formatDate(item.created_at)} />
-        </View>
-
-        <View style={styles.actions}>
-          <Button
-            label="Dzēst īpašumu"
-            variant="destructive"
-            onPress={onDelete}
-            loading={busy}
-          />
         </View>
       </ScrollView>
     </ScreenContainer>
@@ -110,8 +111,5 @@ export default function PropertyDetailScreen() {
 const styles = StyleSheet.create({
   fields: {
     marginBottom: 32,
-  },
-  actions: {
-    marginBottom: 24,
   },
 });

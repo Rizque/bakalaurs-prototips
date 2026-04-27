@@ -5,22 +5,22 @@ import { ListItem } from '@/components/ListItem';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { ScreenHeader } from '@/components/ScreenHeader';
-import { tenantsService } from '@/services/tenants';
-import { Tenant } from '@/types/database';
+import { propertiesService } from '@/services/properties';
+import { Property } from '@/types/database';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { FlatList } from 'react-native';
 
-export default function TenantsScreen() {
+export default function PropertiesScreen() {
   const router = useRouter();
-  const [items, setItems] = useState<Tenant[]>([]);
+  const [items, setItems] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setError(null);
     try {
-      const data = await tenantsService.list();
+      const data = await propertiesService.list();
       setItems(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Kļūda ielādē.');
@@ -37,15 +37,15 @@ export default function TenantsScreen() {
 
   return (
     <ScreenContainer>
-      <ScreenHeader title="Īrnieki" />
+      <ScreenHeader title="Īpašumi" />
       <ErrorBanner message={error} />
 
       {loading ? (
         <LoadingIndicator />
       ) : items.length === 0 ? (
         <EmptyState
-          title="Nav īrnieku"
-          description="Pievienojiet pirmo īrnieku, lai sāktu."
+          title="Nav īpašumu"
+          description="Pievienojiet pirmo īpašumu, lai sāktu."
         />
       ) : (
         <FlatList
@@ -53,9 +53,9 @@ export default function TenantsScreen() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <ListItem
-              title={item.full_name}
-              subtitle={item.contact_info}
-              onPress={() => router.push(`/(app)/tenant/${item.id}`)}
+              title={item.name}
+              subtitle={item.address}
+              onPress={() => router.push(`/(app)/(tabs)/properties/${item.id}`)}
             />
           )}
           contentContainerStyle={{ paddingBottom: 96 }}
@@ -63,7 +63,7 @@ export default function TenantsScreen() {
         />
       )}
 
-      <FloatingAddButton onPress={() => router.push('/(app)/tenant/new')} />
+      <FloatingAddButton onPress={() => router.push('/(app)/(tabs)/properties/new')} />
     </ScreenContainer>
   );
 }

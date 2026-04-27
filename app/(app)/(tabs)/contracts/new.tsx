@@ -7,7 +7,7 @@ import { Segmented } from '@/components/Segmented';
 import { SelectField } from '@/components/SelectField';
 import { TextInput } from '@/components/TextInput';
 import { useAuth } from '@/contexts/AuthContext';
-import { isValidIsoDate } from '@/lib/format';
+import { displayDateToIso, isValidDisplayDate } from '@/lib/format';
 import { contractFilesService } from '@/services/contract-files';
 import { contractsService } from '@/services/contracts';
 import { propertiesService } from '@/services/properties';
@@ -83,12 +83,12 @@ export default function NewContractScreen() {
       setError('Lūdzu, izvēlieties īrnieku.');
       return;
     }
-    if (!isValidIsoDate(startDate)) {
-      setError('Sākuma datumam jābūt formātā GGGG-MM-DD.');
+    if (!isValidDisplayDate(startDate)) {
+      setError('Sākuma datumam jābūt formātā DD.MM.GGGG.');
       return;
     }
-    if (endDate && !isValidIsoDate(endDate)) {
-      setError('Beigu datumam jābūt formātā GGGG-MM-DD.');
+    if (endDate && !isValidDisplayDate(endDate)) {
+      setError('Beigu datumam jābūt formātā DD.MM.GGGG.');
       return;
     }
 
@@ -99,8 +99,8 @@ export default function NewContractScreen() {
           property_id: propertyId,
           tenant_id: tenantId,
           status,
-          start_date: startDate,
-          end_date: endDate || null,
+          start_date: displayDateToIso(startDate),
+          end_date: endDate ? displayDateToIso(endDate) : null,
         },
         user.id
       );
@@ -161,11 +161,12 @@ export default function NewContractScreen() {
 
         <View style={styles.field}>
           <TextInput
-            label="Sākuma datums (GGGG-MM-DD)"
+            label="Sākuma datums (DD.MM.GGGG)"
             value={startDate}
             onChangeText={setStartDate}
             autoCapitalize="none"
-            placeholder="2026-01-01"
+            placeholder="01.01.2026"
+            keyboardType="numbers-and-punctuation"
           />
         </View>
 
@@ -175,7 +176,8 @@ export default function NewContractScreen() {
             value={endDate}
             onChangeText={setEndDate}
             autoCapitalize="none"
-            placeholder="2026-12-31"
+            placeholder="31.12.2026"
+            keyboardType="numbers-and-punctuation"
           />
         </View>
 

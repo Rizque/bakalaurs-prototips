@@ -22,16 +22,6 @@ export default function AppLayout() {
         <Stack.Screen name="index" />
         <Stack.Screen name="biometric-setup" />
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="property/new" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="property/[id]/index" />
-        <Stack.Screen name="property/[id]/edit" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="tenant/new" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="tenant/[id]/index" />
-        <Stack.Screen name="tenant/[id]/edit" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="contract/new" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="contract/[id]/index" />
-        <Stack.Screen name="contract/[id]/edit" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="contract/[id]/view-file" />
       </Stack>
     </View>
   );

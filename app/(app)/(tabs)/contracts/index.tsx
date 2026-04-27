@@ -5,22 +5,27 @@ import { ListItem } from '@/components/ListItem';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { ScreenHeader } from '@/components/ScreenHeader';
-import { propertiesService } from '@/services/properties';
-import { Property } from '@/types/database';
+import { formatDate } from '@/lib/format';
+import { contractsService } from '@/services/contracts';
+import { ContractWithRelations } from '@/types/database';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { FlatList } from 'react-native';
 
-export default function PropertiesScreen() {
+function statusLabel(status: string) {
+  return status === 'active' ? 'Aktīvs' : 'Beidzies';
+}
+
+export default function ContractsScreen() {
   const router = useRouter();
-  const [items, setItems] = useState<Property[]>([]);
+  const [items, setItems] = useState<ContractWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setError(null);
     try {
-      const data = await propertiesService.list();
+      const data = await contractsService.list();
       setItems(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Kļūda ielādē.');
@@ -37,15 +42,15 @@ export default function PropertiesScreen() {
 
   return (
     <ScreenContainer>
-      <ScreenHeader title="Īpašumi" />
+      <ScreenHeader title="Līgumi" />
       <ErrorBanner message={error} />
 
       {loading ? (
         <LoadingIndicator />
       ) : items.length === 0 ? (
         <EmptyState
-          title="Nav īpašumu"
-          description="Pievienojiet pirmo īpašumu, lai sāktu."
+          title="Nav līgumu"
+          description="Pievienojiet pirmo līgumu, lai sāktu."
         />
       ) : (
         <FlatList
@@ -53,9 +58,9 @@ export default function PropertiesScreen() {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <ListItem
-              title={item.name}
-              subtitle={item.address}
-              onPress={() => router.push(`/(app)/property/${item.id}`)}
+              title={`${item.property?.name ?? '—'} · ${item.tenant?.full_name ?? '—'}`}
+              subtitle={`${statusLabel(item.status)} · no ${formatDate(item.start_date)}`}
+              onPress={() => router.push(`/(app)/(tabs)/contracts/${item.id}`)}
             />
           )}
           contentContainerStyle={{ paddingBottom: 96 }}
@@ -63,7 +68,7 @@ export default function PropertiesScreen() {
         />
       )}
 
-      <FloatingAddButton onPress={() => router.push('/(app)/property/new')} />
+      <FloatingAddButton onPress={() => router.push('/(app)/(tabs)/contracts/new')} />
     </ScreenContainer>
   );
 }

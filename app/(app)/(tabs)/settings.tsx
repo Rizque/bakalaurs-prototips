@@ -1,11 +1,11 @@
-import { Button } from '@/components/Button';
-import { ErrorBanner } from '@/components/ErrorBanner';
-import { ScreenContainer } from '@/components/ScreenContainer';
-import { ScreenHeader } from '@/components/ScreenHeader';
-import { useAuth } from '@/contexts/AuthContext';
-import * as LocalAuthentication from 'expo-local-authentication';
-import { useState } from 'react';
-import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Button } from "@/components/Button";
+import { ErrorBanner } from "@/components/ErrorBanner";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenHeader } from "@/components/ScreenHeader";
+import { useAuth } from "@/contexts/AuthContext";
+import * as LocalAuthentication from "expo-local-authentication";
+import { useState } from "react";
+import { ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 
 export default function SettingsScreen() {
   const { user, biometricEnabled, setBiometricEnabled, signOut } = useAuth();
@@ -20,7 +20,7 @@ export default function SettingsScreen() {
         const hasHardware = await LocalAuthentication.hasHardwareAsync();
         const enrolled = await LocalAuthentication.isEnrolledAsync();
         if (!hasHardware || !enrolled) {
-          setError('Šajā ierīcē nav pieejama biometriskā autentifikācija.');
+          setError("Šajā ierīcē nav pieejama biometriskā autentifikācija.");
           setBusy(false);
           return;
         }
@@ -38,13 +38,15 @@ export default function SettingsScreen() {
         <ErrorBanner message={error} />
 
         <Section title="Konts">
-          <Row label="E-pasts" value={user?.email ?? '—'} />
+          <Row label="E-pasts" value={user?.email ?? "—"} />
         </Section>
 
         <Section title="Drošība">
           <View style={styles.toggleRow}>
             <View style={styles.toggleText}>
-              <Text style={styles.toggleTitle}>Biometriskā autentifikācija</Text>
+              <Text style={styles.toggleTitle}>
+                Biometriskā autentifikācija
+              </Text>
               <Text style={styles.toggleHelper}>
                 Pieprasa biometrisku apstiprinājumu līguma failu apskatei un
                 dzēšanai.
@@ -54,7 +56,7 @@ export default function SettingsScreen() {
               value={biometricEnabled}
               onValueChange={onToggleBiometric}
               disabled={busy}
-              trackColor={{ false: '#ddd', true: '#0066cc' }}
+              trackColor={{ false: "#ddd", true: "#2392ec" }}
               thumbColor="#fff"
             />
           </View>
@@ -72,7 +74,13 @@ export default function SettingsScreen() {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
@@ -96,15 +104,15 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     marginBottom: 8,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   sectionBody: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderWidth: 1,
-    borderColor: '#eee',
+    borderColor: "#eee",
     borderRadius: 8,
     paddingHorizontal: 14,
   },
@@ -113,16 +121,16 @@ const styles = StyleSheet.create({
   },
   rowLabel: {
     fontSize: 13,
-    color: '#666',
+    color: "#666",
     marginBottom: 4,
   },
   rowValue: {
     fontSize: 16,
-    color: '#000',
+    color: "#000",
   },
   toggleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 14,
     gap: 12,
   },
@@ -131,12 +139,12 @@ const styles = StyleSheet.create({
   },
   toggleTitle: {
     fontSize: 16,
-    color: '#000',
+    color: "#000",
     marginBottom: 4,
   },
   toggleHelper: {
     fontSize: 13,
-    color: '#666',
+    color: "#666",
     lineHeight: 18,
   },
   signOut: {
